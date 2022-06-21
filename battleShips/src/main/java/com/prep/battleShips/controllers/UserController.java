@@ -1,6 +1,5 @@
 package com.prep.battleShips.controllers;
 
-import com.prep.battleShips.entities.User;
 import com.prep.battleShips.entities.dto.UserLoginDTO;
 import com.prep.battleShips.entities.dto.UserRegistrationDTO;
 import com.prep.battleShips.services.AuthService;
@@ -63,7 +62,7 @@ public class UserController {
                         BindingResult bindingResult,
                         RedirectAttributes redirectAttributes){
 
-        if (bindingResult.hasErrors() || !this.authService.login(userLoginDTO)){
+        if (bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("userLoginDTO", userLoginDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userLoginDTO",
                     bindingResult);
@@ -71,6 +70,12 @@ public class UserController {
             return "redirect:/login";
         }
 
+        if (!this.authService.login(userLoginDTO)){
+            redirectAttributes.addFlashAttribute("userLoginDTO", userLoginDTO);
+            redirectAttributes.addFlashAttribute("badCredentials",
+                    true);
+            return "redirect:/login";
+        }
         return "redirect:/home";
     }
 
