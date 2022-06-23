@@ -57,4 +57,8 @@ public class AuthService {
 
         return true;
     }
+
+    public void logout() {
+        userSession.logout();
+    }
 }

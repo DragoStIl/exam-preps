@@ -37,4 +37,5 @@ public class LoggedUser {
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
+
 }
