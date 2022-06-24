@@ -49,7 +49,7 @@ public class AuthService {
         Optional<User> user = this.userRepository
                 .findByUsernameAndPassword(userLoginDTO.getUsername(), userLoginDTO.getPassword());
 
-        if (user.isEmpty()){
+        if (!user.isPresent()){
             return false;
         }
 
