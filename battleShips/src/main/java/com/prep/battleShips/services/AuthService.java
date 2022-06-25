@@ -49,7 +49,7 @@ public class AuthService {
         Optional<User> user = this.userRepository
                 .findByUsernameAndPassword(userLoginDTO.getUsername(), userLoginDTO.getPassword());
 
-        if (!user.isPresent()){
+        if (user.isEmpty()){
             return false;
         }
 
@@ -60,5 +60,13 @@ public class AuthService {
 
     public void logout() {
         userSession.logout();
+    }
+
+    public boolean isNotLoggedIn() {
+        return userSession.getId() == 0;
+    }
+
+    public long getLoggedUserId() {
+        return this.userSession.getId();
     }
 }

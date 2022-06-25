@@ -2,8 +2,8 @@ package com.prep.battleShips.controllers;
 
 import com.prep.battleShips.entities.dto.ShipDTO;
 import com.prep.battleShips.entities.dto.StartBattleDTO;
+import com.prep.battleShips.services.AuthService;
 import com.prep.battleShips.services.ShipService;
-import com.prep.battleShips.session.LoggedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,26 +16,36 @@ import java.util.List;
 public class HomeController {
 
     private final ShipService shipService;
-    private final LoggedUser loggedUser;
+    private AuthService authService;
 
     @ModelAttribute("startBattleDTO")
     public StartBattleDTO initBattleForm(){
         return new StartBattleDTO();
     }
     @Autowired
-    public HomeController(ShipService shipService, LoggedUser loggedUser) {
+    public HomeController(ShipService shipService, AuthService authService) {
         this.shipService = shipService;
-        this.loggedUser = loggedUser;
+        this.authService = authService;
     }
 
     @GetMapping("/")
     public String loggedOut(){
+        if(!this.authService.isNotLoggedIn()){
+            return "redirect:/home";
+        }
+
         return "index";
     }
 
     @GetMapping("/home")
     public String LoggedIn(Model model){
-        long loggedUserId = this.loggedUser.getId();
+
+
+        if(this.authService.isNotLoggedIn()){
+            return "redirect:/";
+        }
+        long loggedUserId = this.authService.getLoggedUserId();
+
         List<ShipDTO> myShips = this.shipService.getShipsOfUser(loggedUserId);
         List<ShipDTO> enemyShips = this.shipService.getShipsNotOwnedBy(loggedUserId);
         List<ShipDTO> sortedShips = this.shipService.getAllSorted();
